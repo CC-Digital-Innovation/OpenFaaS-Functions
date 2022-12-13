@@ -1,0 +1,10 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://k3s-vitu.quokka.ninja:31112
+functions:
+  test-function:
+    lang: python3
+    handler: ./test-function
+    image: afarina96/test-function:latest
+
