@@ -4,15 +4,15 @@ import os
 import unittest
 
 
-class TestPRTGRenameObject(unittest.TestCase):
+class TestPRTGChangeDeviceIP(unittest.TestCase):
     """Test the OpenFaaS function on the development instance of PRTG"""
     def setUp(self):
         """Make a valid testing payload for each test to reference or alter."""
         self.testing_payload_dict = {
             'prtg_api_key': os.environ.get('PRTG_DEV_INST_API_TOKEN'),
             'prtg_instance': os.environ.get('PRTG_DEV_INST_URL'),
-            'prtg_object_id': '2795',
-            'new_object_name': '[ClickClack] Cali Center'
+            'prtg_device_id': '40',
+            'new_device_ip': '127.0.0.1'
         }
 
     def test_function_success(self):
@@ -81,20 +81,21 @@ class TestPRTGRenameObject(unittest.TestCase):
     def test_invalid_ids(self):
         """Test the function with various types of invalid IDs."""
         # Use a non-existent ID.
-        self.testing_payload_dict['prtg_object_id'] = '99999999'
+        self.testing_payload_dict['prtg_device_id'] = '99999999'
         nonexistent_id_payload = json.dumps(self.testing_payload_dict)
         self.assertEqual(handle(nonexistent_id_payload),
-                         UNABLE_TO_RENAME_RESPONSE)
+                         UNABLE_TO_CHANGE_IP_RESPONSE)
 
         # Use an invalid ID (NAN).
-        self.testing_payload_dict['prtg_object_id'] = 'invalid'
+        self.testing_payload_dict['prtg_device_id'] = 'invalid'
         invalid_id_payload = json.dumps(self.testing_payload_dict)
-        self.assertEqual(handle(invalid_id_payload), UNABLE_TO_RENAME_RESPONSE)
+        self.assertEqual(handle(invalid_id_payload),
+                         UNABLE_TO_CHANGE_IP_RESPONSE)
 
         # Use an empty ID.
-        self.testing_payload_dict['prtg_object_id'] = ''
+        self.testing_payload_dict['prtg_device_id'] = ''
         empty_id_payload = json.dumps(self.testing_payload_dict)
-        self.assertEqual(handle(empty_id_payload), UNABLE_TO_RENAME_RESPONSE)
+        self.assertEqual(handle(empty_id_payload), UNABLE_TO_CHANGE_IP_RESPONSE)
 
 
 if __name__ == '__main__':

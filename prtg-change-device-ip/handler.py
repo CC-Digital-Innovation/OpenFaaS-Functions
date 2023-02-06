@@ -27,29 +27,30 @@ def make_response(status: str, reason: str, status_code: int) -> str:
 
 # Global constant response strings.
 SUCCESSFUL_RESPONSE = make_response('success',
-                                    'Successfully renamed the object!', 200)
+                                    'Successfully changed the device''s IP!',
+                                    200)
 INVALID_PAYLOAD_RESPONSE = make_response('failure',
                                          'Invalid payload provided.', 400)
 INVALID_PRTG_INSTANCE_RESPONSE = make_response('failure',
                                                'Could not reach the PRTG '
                                                'instance.', 400)
-UNABLE_TO_RENAME_RESPONSE = make_response('failure',
-                                          'PRTG was unable to rename the '
-                                          'object.', 400)
+UNABLE_TO_CHANGE_IP_RESPONSE = make_response('failure',
+                                             'PRTG was unable to change the '
+                                             'device''s IP.', 400)
 UNAUTHORIZED_RESPONSE = make_response('failure',
                                       'You are not authorized to do this.', 401)
 
 
 def handle(payload: str) -> str:
-    """Given a JSON-formatted payload string, rename an object in PRTG.
+    """Given a JSON-formatted payload string, change a device's IP in PRTG.
 
     Args:
         payload (str): JSON payload string. Valid format:
         {
           "prtg_instance": <PRTG Instance URL>,
           "prtg_api_key": <PRTG API Key>,
-          "prtg_object_id": <ID of Object in PRTG>,
-          "new_object_name": <The Object's New Name>
+          "prtg_device_id": <ID of Device in PRTG>,
+          "new_device_ip": <The Device's New IP>
         }
 
     Returns:
@@ -67,17 +68,18 @@ def handle(payload: str) -> str:
 
     # Prepare variable to inspect the payload.
     has_valid_keys = 'prtg_instance' in data and 'prtg_api_key' in data and \
-                     'prtg_object_id' in data and 'new_object_name' in data
+                     'prtg_device_id' in data and 'new_device_ip' in data
 
     # Check if the payload is invalid.
     if len(data) != 4 or not has_valid_keys:
         return INVALID_PAYLOAD_RESPONSE
 
     # Prepare variables to send the request to the PRTG API.
-    prtg_api_call = f"{data.get('prtg_instance')}/api/rename.htm"
+    prtg_api_call = f"{data.get('prtg_instance')}/api/setobjectproperty.htm"
     api_call_params = {
-        'id': data.get('prtg_object_id'),
-        'value': data.get('new_object_name'),
+        'id': data.get('prtg_device_id'),
+        'name': 'host',
+        'value': data.get('new_device_ip'),
         'apitoken': data.get('prtg_api_key')
     }
 
@@ -91,7 +93,7 @@ def handle(payload: str) -> str:
         if prtg_response.status_code == 401:
             return UNAUTHORIZED_RESPONSE
         elif prtg_response.status_code != 200:
-            return UNABLE_TO_RENAME_RESPONSE
+            return UNABLE_TO_CHANGE_IP_RESPONSE
 
     # Return the successful response from PRTG.
     return SUCCESSFUL_RESPONSE
