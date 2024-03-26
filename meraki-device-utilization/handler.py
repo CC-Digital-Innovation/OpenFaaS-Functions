@@ -32,7 +32,7 @@ def handle(serial_number: str) -> str:
     if device_utilization_response:
         return json.dumps({
             "status": "success",
-            "cpu_usage": device_utilization_response.get('perfScore')
+            "device_utilization": device_utilization_response.get('perfScore')
         })
     else:
         return json.dumps({

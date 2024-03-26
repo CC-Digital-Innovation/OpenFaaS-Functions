@@ -1,9 +1,0 @@
-version: 1.0
-provider:
-  name: openfaas
-  gateway: http://127.0.0.1:8080
-functions:
-  prtg-change-device-ip:
-    lang: python3
-    handler: ./prtg-change-device-ip
-    image: afarina96/prtg-change-device-ip:latest

@@ -1,2 +1,2 @@
 # OpenFaaS-Functions
-A collection of functions developed by the DevOps team with OpenFaaS!
+A collection of OpenFaaS functions developed by the Computacenter Digital Innovation DevOps team!

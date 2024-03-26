@@ -3,9 +3,9 @@ provider:
   name: openfaas
   gateway: http://127.0.0.1:8080
 functions:
-  meraki-device-cpu-utilization:
+  meraki-device-utilization:
     lang: python3
-    handler: ./meraki-device-cpu-utilization
-    image: afarina96/meraki-device-cpu-utilization:latest
+    handler: ./meraki-device-utilization
+    image: afarina96/meraki-device-utilization:latest
     secrets:
     - afarina-meraki-api-key
