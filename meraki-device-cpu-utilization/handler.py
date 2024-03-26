@@ -8,26 +8,31 @@ with open('/var/openfaas/secrets/afarina-meraki-api-key', 'r') as file:
     MERAKI_API_KEY = file.read().rstrip()
 
 
-def handle(serial_num: str):
-    """Return the CPU usage (in percent) of a Meraki device.
+def handle(serial_number: str) -> str:
+    """
+    Return the Meraki device's utilization (in percent).
 
     Args:
-        serial_num (str): The serial number of the device.
+        serial_number (str): The serial number of the Meraki device.
+
+    Returns:
+        (str): The JSON-formatted string of the Meraki device's utilization
+        (if successful). Otherwise, returns a failure message.
     """
 
     # Make the connection to the Meraki dashboard.
-    meraki_dash = meraki.DashboardAPI(MERAKI_API_KEY, suppress_logging=True)
+    meraki_dashboard = meraki.DashboardAPI(MERAKI_API_KEY, suppress_logging=True)
 
-    # Send the API request.
-    response = meraki_dash.appliance.getDeviceAppliancePerformance(
-        serial_num
+    # Send a request to get the Meraki device's utilization.
+    device_utilization_response = meraki_dashboard.appliance.getDeviceAppliancePerformance(
+        serial_number
     )
 
-    # Return the response.
-    if response:
+    # Return a response based off the response from the Meraki API.
+    if device_utilization_response:
         return json.dumps({
             "status": "success",
-            "cpu_usage": response.get('perfScore')
+            "cpu_usage": device_utilization_response.get('perfScore')
         })
     else:
         return json.dumps({
