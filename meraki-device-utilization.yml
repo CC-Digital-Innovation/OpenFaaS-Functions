@@ -8,4 +8,4 @@ functions:
     handler: ./meraki-device-utilization
     image: afarina96/meraki-device-utilization:latest
     secrets:
-    - afarina-meraki-api-key
+        - afarina-meraki-api-key
